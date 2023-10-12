@@ -1,0 +1,65 @@
+<%- include("./partials/header.ejs") %>
+
+  <!-- The body -->
+
+  <body>
+
+    <%- include("./partials/navbar.ejs") %>
+
+      <div class="container">
+        <div class="list-group">
+
+          <div class="date">
+            <h1>Work List</h1>
+          </div>
+
+          <!-- Ejs to add a list item in the workChecklist -->
+          <% if(locals.workChecklist){ %>
+            <% for (var i=0; i<workChecklist.length ; i++){ %>
+              <%- include("./partials/checkbox.ejs",{todo : workChecklist[i]["todo"], checkValue:i, isChecked : workChecklist[i]["isChecked"]} ); %>
+                <% } %>
+                  <% } %>
+
+                    <!-- input box to get the new task-->
+                    <div class="contentBox">
+                      <form class="textbox" action="/work" method="POST">
+                        <input class="textbox" type="text" id="todo" name="todo"></input>
+                        <input type="submit" value="+">
+                      </form>
+                    </div>
+
+     
+  <!-- Bootstrap script link-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+  crossorigin="anonymous"></script>
+
+<!--JQuery link-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+<!-- Javascript-->
+<script type="text/javascript" charset="utf-8">
+  document.getElementById("todo").focus(); // To keep the textbox active
+ 
+  let checkBox = document.querySelectorAll(".todoCheckBox"); // Get the checkbox
+  
+  for (var i=0; i<checkBox.length ; i++){
+    checkBox[i].addEventListener("change",function(){  // add event listeners for all checkboxes
+      let checkedBoxes = $('input[name="todoCheckBox"]:checked');  // get boxes that are currently checked
+      let taskDone =[];  
+      console.log("Hey im triggered");
+
+      checkedBoxes.each( function () {
+        console.log( $(this).val() );
+        taskDone.push($(this).val() );  // push in the "value" of all the done tasks to "taskDone" array
+      });
+
+
+      console.log(`taskDone : ${taskDone}`);
+      
+      $.post("/taskDone",{taskDone : taskDone , page :"work"}); // post the taskdone array to the server
+    });
+  };
+
+</script>
+<%- include("./partials/footer.ejs") %>
